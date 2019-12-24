@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "977961512434",
+    "firebase_url": "https://authtest-dab74.firebaseio.com",
+    "project_id": "authtest-dab74",
+    "storage_bucket": "authtest-dab74.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:977961512434:android:aa92e802f8ac79f2a3cf6b",
+        "android_client_info": {
+          "package_name": "com.example.testauth"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "977961512434-rjrk3t0ugdflhk6dej9svk1b3hpvjoi5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJxeakUFZCWZEtwXV0RT5p4bInA6doEG4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "977961512434-rjrk3t0ugdflhk6dej9svk1b3hpvjoi5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
