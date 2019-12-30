@@ -1,3 +1,33 @@
 <resources>
     <string name="app_name">TestAuth</string>
+    <string name="title_activity_bla">Sign in</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="no_account_label">Don\'t have an account?</string>
+    <string name="reg_here_button_text">Register Here</string>
+    <string name="register_here_text">Don\'t have an account. Register Here</string>
+    <string name="nav_header_text">TestAuth</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="email_exemple">example@domain.com</string>
+    <string name="name_hint">Enter Name</string>
+    <string name="profile_name">Your Name</string>
+    <string name="already_have_account">If you already have an account for this email, press the text to login</string>
+    <string name="home">Home</string>
+    <string name="profile">Profile</string>
+    <string name="logout">Logout</string>
+    <string name="not_verified_email">Not Verified! Click to verify your email.</string>
+    <string name="change_password">Change Password</string>
+    <string name="save_changes">Save changes</string>
+    <string name="no_account">If you don\'t have an account, click the text to register.</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="login">Login</string>
+    <string name="login_title">Account Login</string>
+    <string name="register_title">New User Registration</string>
+    <string name="sign_up">Sign Up</string>
 </resources>
