@@ -1,4 +1,4 @@
-package com.example.testauth
+package com.example.testauth.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -7,6 +7,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
+import com.example.testauth.R
 import com.example.testauth.utils.logout
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_home.*

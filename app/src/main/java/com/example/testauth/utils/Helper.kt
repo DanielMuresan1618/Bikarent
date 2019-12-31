@@ -3,9 +3,9 @@ package com.example.testauth.utils
 import android.content.Context
 import android.content.Intent
 import android.widget.Toast
-import com.example.testauth.HomeActivity
-import com.example.testauth.LoginActivity
-//import com.example.testauth.HomeActivity
+import com.example.testauth.ui.HomeActivity
+import com.example.testauth.ui.LoginActivity
+//import com.example.testauth.ui.HomeActivity
 
 fun Context.toast(message: String) =
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()

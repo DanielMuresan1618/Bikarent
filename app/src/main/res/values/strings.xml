@@ -22,7 +22,6 @@
     <string name="profile">Profile</string>
     <string name="logout">Logout</string>
     <string name="not_verified_email">Not Verified! Click to verify your email.</string>
-    <string name="change_password">Change Password</string>
     <string name="save_changes">Save changes</string>
     <string name="no_account">If you don\'t have an account, click the text to register.</string>
     <string name="forgot_password">Forgot Password?</string>
@@ -30,4 +29,20 @@
     <string name="login_title">Account Login</string>
     <string name="register_title">New User Registration</string>
     <string name="sign_up">Sign Up</string>
+    <string name="verify_phone_number">Verify Phone Number</string>
+    <string name="code_sent">A verification code will be sent to your number.</string>
+    <string name="send_code">Send Code</string>
+    <string name="phone">Phone</string>
+    <string name="wait_for_code">Please wait while we automatically verify your number. If auto verification is not working you can enter the code received as well.</string>
+    <string name="verif_code">Verification Code</string>
+    <string name="verify">Verify</string>
+    <string name="change_password">Change Password</string>
+    <string name="update">Update</string>
+    <string name="new_email">New Email</string>
+    <string name="authenticate">Authenticate</string>
+    <string name="email_change_guidline">To change email you need to enter your password again</string>
+    <string name="update_email">Update Email</string>
+    <string name="change_passowrd_guidline">To change password you need to enter your password again</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_password">Confirm Password</string>
 </resources>

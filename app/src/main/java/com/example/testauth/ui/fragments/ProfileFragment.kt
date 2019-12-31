@@ -1,4 +1,4 @@
-package com.example.testauth
+package com.example.testauth.ui.fragments
 
 
 import android.app.Activity.RESULT_OK
@@ -11,7 +11,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
+import com.example.testauth.R
 import com.example.testauth.utils.toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
@@ -26,16 +28,11 @@ class ProfileFragment : Fragment() {
     private lateinit var  imageUri: Uri
     private val currentUser = FirebaseAuth.getInstance().currentUser
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
 
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
-
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -86,11 +83,35 @@ class ProfileFragment : Fragment() {
                 }
 
         }
+        text_not_verified.setOnClickListener {
+            currentUser?.sendEmailVerification()?.addOnCompleteListener {
+                if(it.isSuccessful){
+                    context?.toast("Verification Email Sent")
+                }else{
+                    context?.toast(it.exception?.message!!)
+                }
+            }
+        }
+        text_phone.setOnClickListener{
+            val action = ProfileFragmentDirections.actionVerifyPhoneNumber()
+            Navigation.findNavController(it).navigate(action)
+        }
+        profile_text_email.setOnClickListener{
+            val action = ProfileFragmentDirections.actionUpdateEmail()
+            Navigation.findNavController(it).navigate(action)
+        }
+        text_password.setOnClickListener{view->
+            val action = ProfileFragmentDirections.actionUpdatePassowrd()
+            Navigation.findNavController(view).navigate(action)
+        }
     }
+
     private fun takePictureIntent() {
         Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             .also { pictureIntent -> pictureIntent.resolveActivity(activity?.packageManager!!)
-                .also{startActivityForResult(pictureIntent, REQUEST_IMAGE_CAPTURE)}}
+                .also{startActivityForResult(pictureIntent,
+                    REQUEST_IMAGE_CAPTURE
+                )}}
 
     }
 
