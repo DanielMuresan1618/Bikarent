@@ -14,11 +14,7 @@ import com.example.testauth.utils.toast
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import kotlinx.android.synthetic.main.activity_login.*
-import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.fragment_update_email.*
-import kotlinx.android.synthetic.main.fragment_update_email.edit_text_password
-import kotlinx.android.synthetic.main.activity_login.progressbar as progressbar1
 
 class UpdateEmailFragment : Fragment() {
 
@@ -69,14 +65,14 @@ class UpdateEmailFragment : Fragment() {
             val email =  edit_text_email.text.toString().trim()
 
             if (email.isEmpty()) {
-                text_email.error = "Email Required"
-                text_email.requestFocus()
+                edit_text_email.error = "Email Required"
+                edit_text_email.requestFocus()
                 return@setOnClickListener
             }
 
             if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                text_email.error = "Valid Email Required"
-                text_email.requestFocus()
+                edit_text_email.error = "Valid Email Required"
+                edit_text_email.requestFocus()
                 return@setOnClickListener
             }
 
