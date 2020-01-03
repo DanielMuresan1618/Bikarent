@@ -1,4 +1,4 @@
-package com.example.testauth.ui.fragments
+package com.example.bikarent.ui.fragments
 
 
 import android.app.Activity.RESULT_OK
@@ -13,8 +13,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
-import com.example.testauth.R
-import com.example.testauth.utils.toast
+import com.example.bikarent.R
+import com.example.bikarent.utils.toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.storage.FirebaseStorage

@@ -1,4 +1,4 @@
-package com.example.testauth
+package com.example.bikarent
 
 import org.junit.Test
 

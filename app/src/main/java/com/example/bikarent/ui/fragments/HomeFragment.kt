@@ -1,4 +1,4 @@
-package com.example.testauth.ui.fragments
+package com.example.bikarent.ui.fragments
 
 
 import android.os.Bundle
@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.testauth.R
+import com.example.bikarent.R
 
 
 class HomeFragment : Fragment() {

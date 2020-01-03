@@ -1,10 +1,10 @@
-package com.example.testauth.ui
+package com.example.bikarent.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Patterns
 import android.view.View
-import com.example.testauth.utils.toast
+import com.example.bikarent.utils.toast
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_reset_password.*
 

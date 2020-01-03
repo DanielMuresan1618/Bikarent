@@ -1,10 +1,10 @@
-package com.example.testauth.utils
+package com.example.bikarent.utils
 
 import android.content.Context
 import android.content.Intent
 import android.widget.Toast
-import com.example.testauth.ui.HomeActivity
-import com.example.testauth.ui.LoginActivity
+import com.example.bikarent.ui.HomeActivity
+import com.example.bikarent.ui.LoginActivity
 //import com.example.testauth.ui.HomeActivity
 
 fun Context.toast(message: String) =
