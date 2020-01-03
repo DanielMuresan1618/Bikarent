@@ -1,42 +1,71 @@
 {
   "project_info": {
-    "project_number": "977961512434",
-    "firebase_url": "https://authtest-dab74.firebaseio.com",
-    "project_id": "authtest-dab74",
-    "storage_bucket": "authtest-dab74.appspot.com"
+    "project_number": "196150208790",
+    "firebase_url": "https://bikarent-d3c2b.firebaseio.com",
+    "project_id": "bikarent-d3c2b",
+    "storage_bucket": "bikarent-d3c2b.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:977961512434:android:aa92e802f8ac79f2a3cf6b",
+        "mobilesdk_app_id": "1:196150208790:android:bb776a66ce7d66255c8837",
         "android_client_info": {
-          "package_name": "com.example.testauth"
+          "package_name": "com.example.bikarent"
         }
       },
       "oauth_client": [
         {
-          "client_id": "977961512434-ttk52hcrcnc7kf1ji45i9vneaj7fgnkm.apps.googleusercontent.com",
+          "client_id": "196150208790-cjaisjnlqa7g6ssljqu2hsicddcjoi50.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.testauth",
+            "package_name": "com.example.bikarent",
             "certificate_hash": "8bc69909e6e1d17cbe40f5b209017f839fab8581"
           }
         },
         {
-          "client_id": "977961512434-rjrk3t0ugdflhk6dej9svk1b3hpvjoi5.apps.googleusercontent.com",
+          "client_id": "196150208790-jqp60mput7glhn5ttpiolj6itr6tc3gm.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCJxeakUFZCWZEtwXV0RT5p4bInA6doEG4"
+          "current_key": "AIzaSyA7sp0K97enViWVNRDAUGLLuRvfOYz6Z4E"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "977961512434-rjrk3t0ugdflhk6dej9svk1b3hpvjoi5.apps.googleusercontent.com",
+              "client_id": "196150208790-jqp60mput7glhn5ttpiolj6itr6tc3gm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:196150208790:android:f0e5e6df75aec2e75c8837",
+        "android_client_info": {
+          "package_name": "com.exemple.bikarent"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "196150208790-jqp60mput7glhn5ttpiolj6itr6tc3gm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7sp0K97enViWVNRDAUGLLuRvfOYz6Z4E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "196150208790-jqp60mput7glhn5ttpiolj6itr6tc3gm.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

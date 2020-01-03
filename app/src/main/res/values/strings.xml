@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TestAuth</string>
+    <string name="app_name">Bikarent</string>
     <string name="title_activity_bla">Sign in</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
@@ -12,7 +12,7 @@
     <string name="no_account_label">Don\'t have an account?</string>
     <string name="reg_here_button_text">Register Here</string>
     <string name="register_here_text">Don\'t have an account. Register Here</string>
-    <string name="nav_header_text">TestAuth</string>
+    <string name="nav_header_text">Bikarent</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="email_exemple">example@domain.com</string>
     <string name="name_hint">Enter Name</string>

@@ -1,2 +1,2 @@
 include ':app'
-rootProject.name='TestAuth'
+rootProject.name='Bikarent'
