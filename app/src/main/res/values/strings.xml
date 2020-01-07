@@ -1,4 +1,5 @@
 <resources>
+    <string name="google_map_api_key">AIzaSyCMi-IW3qEVqMEOX2Ty68NpO1ZG5phiB8U</string>
     <string name="app_name">Bikarent</string>
     <string name="title_activity_bla">Sign in</string>
     <string name="prompt_email">Email</string>

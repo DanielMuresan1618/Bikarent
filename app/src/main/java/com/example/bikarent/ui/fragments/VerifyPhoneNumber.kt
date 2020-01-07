@@ -35,9 +35,9 @@ class VerifyPhoneNumber : Fragment() {
         layoutPhone.visibility = View.VISIBLE
         layoutVerification.visibility = View.GONE
 
-        button_send_verification.setOnClickListener{
+        button_send_verification.setOnClickListener {
             val phone = edit_text_phone.text.toString().trim()
-            if (phone.isEmpty() || phone.length != 10){
+            if (phone.isEmpty() || phone.length != 10) {
                 edit_text_phone.error = "Enter a correct phone number"
                 edit_text_phone.requestFocus()
                 return@setOnClickListener
@@ -45,57 +45,51 @@ class VerifyPhoneNumber : Fragment() {
             val phoneNumber = '+' + ccp.selectedCountryCode + phone
             PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 phoneNumber
-                ,60
-                ,TimeUnit.SECONDS
-                ,requireActivity()
-                ,phoneAuthCallback
+                , 60
+                , TimeUnit.SECONDS
+                , requireActivity()
+                , phoneAuthCallback
             )
 
             layoutPhone.visibility = View.GONE
             layoutVerification.visibility = View.VISIBLE
         }
 
-        button_verify.setOnClickListener{
+        button_verify.setOnClickListener {
             val code = edit_text_code.text.toString().trim()
-            if (code.isEmpty()){
-                edit_text_code.error ="Code required"
+            if (code.isEmpty()) {
+                edit_text_code.error = "Code required"
                 edit_text_code.requestFocus()
                 return@setOnClickListener
             }
-            verificationId?.let{
+            verificationId?.let {
                 val credential = PhoneAuthProvider.getCredential(it, code)
                 addPhoneNumber(credential)
             }
         }
-    }
-    private val phoneAuthCallback = object: PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
-        override fun onVerificationCompleted(phoneAuthCredential: PhoneAuthCredential?) {
-            phoneAuthCredential?.let{ phoneAuthCredential ->
+    }
+    val phoneAuthCallback  =  object: PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+        override fun onVerificationCompleted(p0: PhoneAuthCredential) {
+            p0.let { phoneAuthCredential ->
                 addPhoneNumber(phoneAuthCredential)
             }
         }
 
-        override fun onVerificationFailed(exception: FirebaseException?) {
-            context?.toast(exception?.message!!)
-        }
-
-        override fun onCodeSent(verificationID: String?, token: PhoneAuthProvider.ForceResendingToken?) {
-            super.onCodeSent(verificationID, token)
-            this@VerifyPhoneNumber.verificationId = verificationID
+        override fun onVerificationFailed(p0: FirebaseException) {
+            context?.toast(p0.message!!)
         }
     }
-
-    private fun addPhoneNumber(phoneAuthCredential: PhoneAuthCredential): Unit {
-        FirebaseAuth.getInstance().currentUser?.updatePhoneNumber(phoneAuthCredential)?.addOnCompleteListener{
-            if (it.isSuccessful){
-                context?.toast("Phone Added")
-                val action = VerifyPhoneNumberDirections.actionPhoneVerified()
-                Navigation.findNavController(button_verify).navigate(action)
-            }
-            else{
-                context?.toast(it.exception?.message!!)
+        private fun addPhoneNumber(phoneAuthCredential: PhoneAuthCredential): Unit {
+            FirebaseAuth.getInstance().currentUser?.updatePhoneNumber(phoneAuthCredential)?.addOnCompleteListener{
+                if (it.isSuccessful){
+                    context?.toast("Phone Added")
+                    val action = VerifyPhoneNumberDirections.actionPhoneVerified()
+                    Navigation.findNavController(button_verify).navigate(action)
+                }
+                else{
+                    context?.toast(it.exception?.message!!)
+                }
             }
         }
-    }
 }
