@@ -6,16 +6,15 @@ import android.util.Patterns
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bikarent.R
-import com.example.bikarent.models.User
 import com.example.bikarent.utils.login
 import com.example.bikarent.utils.toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreSettings
 import kotlinx.android.synthetic.main.activity_login.edit_text_password
 import kotlinx.android.synthetic.main.activity_login.progressbar
 import kotlinx.android.synthetic.main.activity_login.text_email
 import kotlinx.android.synthetic.main.activity_register.*
-
 
 
 class RegisterActivity : AppCompatActivity() {
@@ -52,7 +51,13 @@ class RegisterActivity : AppCompatActivity() {
                 edit_text_password.requestFocus()
                 return@setOnClickListener
             }
-            addToFirestore(email?, name?, password?)
+
+            if (name.isEmpty()){
+                edit_text_name.error = "Name Required"
+                edit_text_name.requestFocus()
+                return@setOnClickListener
+            }
+            registerUser(email, name, password)
 
         }
 
@@ -62,28 +67,33 @@ class RegisterActivity : AppCompatActivity() {
     }
 
 
-    private  fun addToFirestore(email:String?,name:String?,password: String?) {
-        val userModel = User(email = email, password = password, name = name, avatar = null)
-        val user: MutableMap<String, Any?> = HashMap()
-
-        user["email"] = email
-        user["name"] = name
-        user["password"] = password
-        mDb.collection("Users").add(user).addOnSuccessListener {
-            registerUser(email,password)
-        }.addOnCanceledListener {
-            toast("Aborted by user")
-        }.addOnFailureListener{
-            toast(it.message!!)
-        }
-    }
-    private fun registerUser(email: String, password: String) {
+    private fun registerUser(email: String,name: String, password: String) {
         progressbar.visibility = View.VISIBLE
+
         mAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
-                progressbar.visibility = View.GONE
                 if (task.isSuccessful) {
-                    login()
+                    val uid = mAuth.currentUser!!.uid
+                    val user= com.example.bikarent.models.User(email=email, username = name,user_id = uid, avatar = null)
+                    val settings = FirebaseFirestoreSettings.Builder().build()
+                    mDb.firestoreSettings = settings
+
+                    val newUserRef = mDb
+                        .collection(getString(R.string.collection_users))
+                        .document(uid)
+
+                    newUserRef.set(user).addOnCompleteListener(this){
+                        if (it.isSuccessful){
+                            progressbar.visibility = View.GONE
+                            toast("Succesfully registered")
+                            login()
+
+                        }else {
+                            task.exception?.message?.let {
+                                toast(it)
+                            }
+                        }
+                    }
                 } else {
                     task.exception?.message?.let {
                         toast(it)

@@ -4,21 +4,31 @@ package com.example.bikarent.ui.fragments
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.example.bikarent.R
+import com.example.bikarent.models.UserLocation
 import com.example.bikarent.utils.Constants.MAPVIEW_BUNDLE_KEY
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FirebaseFirestore
 
 
 class HomeFragment : Fragment(), OnMapReadyCallback {
 
     private var mMapView: MapView? = null
+    private var mDb = FirebaseFirestore.getInstance()
+    private var userLocation:UserLocation? = null
+    private var currentUser = FirebaseAuth.getInstance().currentUser
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,6 +64,19 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             outState.putBundle(MAPVIEW_BUNDLE_KEY, mapViewBundle)
         }
         mMapView!!.onSaveInstanceState(mapViewBundle)
+    }
+
+    private fun saveUserLocation() {
+        if (userLocation != null) {
+            val locationRef: DocumentReference = mDb
+                .collection(getString(R.string.collection_user_locations))
+                .document(currentUser!!.uid)
+            locationRef.set(userLocation!!).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    print("saved location")
+                }
+            }
+        }
     }
 
     override fun onResume() {

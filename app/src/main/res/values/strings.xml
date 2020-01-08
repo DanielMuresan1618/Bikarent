@@ -46,4 +46,6 @@
     <string name="change_passowrd_guidline">To change password you need to enter your password again</string>
     <string name="new_password">New Password</string>
     <string name="confirm_password">Confirm Password</string>
+    <string name="collection_users">Users</string>
+    <string name="collection_user_locations">User Locations</string>
 </resources>
