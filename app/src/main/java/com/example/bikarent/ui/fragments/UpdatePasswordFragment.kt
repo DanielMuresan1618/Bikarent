@@ -31,66 +31,100 @@ class UpdatePasswordFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        layoutUpdatePassword.visibility = View.GONE
-        layoutPassword.visibility = View.VISIBLE
+        switchLayout(false)
 
         button_authenticate.setOnClickListener{
             val password = edit_text_password.text.toString().trim()
 
-            if (password.isEmpty()){
-                edit_text_password.error = "Password required!"
-                edit_text_password.requestFocus()
+            if (wrongPassword(password)){
                 return@setOnClickListener
             }
-
-            progressbar.visibility= View.VISIBLE
-
-            currentUser?.let { user ->
-                val credentials = EmailAuthProvider.getCredential(user.email!!,password)
-                user.reauthenticate(credentials).addOnCompleteListener{
-                    when {
-                        it.isSuccessful -> {
-                            layoutUpdatePassword.visibility = View.VISIBLE
-                            layoutPassword.visibility = View.GONE
-                        }
-                        it.exception is FirebaseAuthInvalidCredentialsException -> {
-                            edit_text_password.error="Wrong password"
-                            edit_text_password.requestFocus()
-                        }
-                        else -> context?.toast(it.exception?.message!!)
-                    }
-                }
-            }
-            progressbar.visibility= View.GONE
+            showProgressBar(true)
+            authenticate(password)
+            showProgressBar(false)
         }
 
-        button_update.setOnClickListener{
+        button_update.setOnClickListener{view ->
             val password = edit_text_new_password.text.toString().trim()
-            if (password.isEmpty()){
-                edit_text_new_password.error = "At least 6 characters required"
-                edit_text_new_password.requestFocus()
+            if (wrongPassword2(password)) {
                 return@setOnClickListener
             }
-            if (password != edit_text_new_password_confirm.text.toString().trim()){
-                edit_text_new_password_confirm.error = "The passwords don't match!"
-                edit_text_new_password_confirm.requestFocus()
-                return@setOnClickListener
-            }
-            progressbar.visibility = View.VISIBLE
-            currentUser?.let{user ->
-                user.updatePassword(password).addOnCompleteListener{
-                    if (it.isSuccessful){
-                        val action = UpdatePasswordFragmentDirections.actionPasswordUpdated()
-                        Navigation.findNavController(view).navigate(action)
-                        context?.toast("Password Updated!")
-                    }else{
-                        context?.toast(it.exception?.message!!)
-                    }
+            showProgressBar(true)
+            updatePassword(password, view)
+            showProgressBar(false)
+        }
+    }
+
+    private fun updatePassword(password: String, view: View) {
+        currentUser?.let { user ->
+            user.updatePassword(password).addOnCompleteListener {
+                if (it.isSuccessful) {
+                    val action = UpdatePasswordFragmentDirections.actionPasswordUpdated()
+                    Navigation.findNavController(view).navigate(action)
+                    context?.toast("Password Updated!")
+                } else {
+                    context?.toast(it.exception?.message!!)
                 }
             }
+        }
+    }
+
+    private fun authenticate(password: String) {
+        currentUser?.let { user ->
+            val credentials = EmailAuthProvider.getCredential(user.email!!, password)
+            user.reauthenticate(credentials).addOnCompleteListener {
+                when {
+                    it.isSuccessful -> {
+                        switchLayout(true)
+                    }
+                    it.exception is FirebaseAuthInvalidCredentialsException -> {
+                        edit_text_password.error = "Wrong password"
+                        edit_text_password.requestFocus()
+                    }
+                    else -> context?.toast(it.exception?.message!!)
+                }
+            }
+        }
+    }
+
+    private fun wrongPassword(password: String): Boolean {
+        if (password.isEmpty()) {
+            edit_text_password.error = "Password required!"
+            edit_text_password.requestFocus()
+            return true
+        }
+        return false
+    }
+
+    private fun wrongPassword2(password: String): Boolean {
+        if (password.isEmpty()) {
+            edit_text_new_password.error = "At least 6 characters required"
+            edit_text_new_password.requestFocus()
+            return true
+        }
+        if (password != edit_text_new_password_confirm.text.toString().trim()) {
+            edit_text_new_password_confirm.error = "The passwords don't match!"
+            edit_text_new_password_confirm.requestFocus()
+            return true
+        }
+        return false
+    }
+
+    private fun showProgressBar(on: Boolean) {
+        if (on){
+            progressbar.visibility = View.VISIBLE
+        }else {
             progressbar.visibility = View.GONE
         }
     }
 
-
+    private fun switchLayout(updatePasswordBoolean: Boolean) {
+        if (!updatePasswordBoolean) {
+            layoutUpdatePassword.visibility = View.GONE
+            layoutPassword.visibility = View.VISIBLE
+        }else {
+            layoutUpdatePassword.visibility = View.VISIBLE
+            layoutPassword.visibility = View.GONE
+        }
+    }
 }

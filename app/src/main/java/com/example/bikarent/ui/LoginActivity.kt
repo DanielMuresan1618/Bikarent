@@ -27,9 +27,7 @@ import com.google.android.gms.common.GoogleApiAvailability
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_login.*
 
-
 class LoginActivity : AppCompatActivity() {
-
     private lateinit var mAuth: FirebaseAuth
     private var mLocationPermissionGranted = false
 
@@ -42,25 +40,9 @@ class LoginActivity : AppCompatActivity() {
         button_sign_in.setOnClickListener {
             val email = text_email.text.toString().trim()
             val password = edit_text_password.text.toString().trim()
-
-            if (email.isEmpty()) {
-                text_email.error = "Email Required"
-                text_email.requestFocus()
+            if (validateEmailAndPassword(email, password)) {
                 return@setOnClickListener
             }
-
-            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                text_email.error = "Valid Email Required"
-                text_email.requestFocus()
-                return@setOnClickListener
-            }
-
-            if (password.isEmpty() || password.length < 6) {
-                edit_text_password.error = "6 char password required"
-                edit_text_password.requestFocus()
-                return@setOnClickListener
-            }
-
             loginUser(email, password)
         }
 
@@ -73,7 +55,33 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    private fun validateEmailAndPassword(email: String, password: String): Boolean {
+        if (email.isEmpty()) {
+            text_email.error = "Email Required"
+            text_email.requestFocus()
+            return true
+        }
 
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            text_email.error = "Valid Email Required"
+            text_email.requestFocus()
+            return true
+        }
+
+        if (password.isEmpty() || password.length < 6) {
+            edit_text_password.error = "6 char password required"
+            edit_text_password.requestFocus()
+            return true
+        }
+        return false
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mAuth.currentUser?.let {
+            login()
+        }
+    }
 
     override fun onResume() {
         super.onResume()
@@ -83,6 +91,39 @@ class LoginActivity : AppCompatActivity() {
             }
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String?>, grantResults: IntArray) {
+        mLocationPermissionGranted = false
+        when (requestCode) {
+            PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION -> {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.size > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                ) {
+                    mLocationPermissionGranted = true
+                }
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when (requestCode) {
+            PERMISSIONS_REQUEST_ENABLE_GPS -> {
+                if (!mLocationPermissionGranted)
+                    getLocationPermission()
+            }
+        }
+    }
+
+    private fun checkMapServices(): Boolean {
+        if (isServicesOK()) {
+            if (isMapsEnabled()) {
+                return true
+            }
+        }
+        return false
+    }
 
     private fun loginUser(email: String, password: String) {
         progressbar.visibility = View.VISIBLE
@@ -99,22 +140,6 @@ class LoginActivity : AppCompatActivity() {
             }
     }
 
-    override fun onStart() {
-        super.onStart()
-        mAuth.currentUser?.let {
-            login()
-        }
-    }
-
-    private fun checkMapServices(): Boolean {
-        if (isServicesOK()) {
-            if (isMapsEnabled()) {
-                return true
-            }
-        }
-        return false
-    }
-
     private fun buildAlertMessageNoGps() {
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         builder.setMessage("This application requires GPS to work properly, do you want to enable it?")
@@ -128,7 +153,7 @@ class LoginActivity : AppCompatActivity() {
         alert.show()
     }
 
-    fun isMapsEnabled(): Boolean {
+    private fun isMapsEnabled(): Boolean {
         val manager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             buildAlertMessageNoGps()
@@ -148,53 +173,24 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    fun isServicesOK(): Boolean {
+    private fun isServicesOK(): Boolean {
 
         val available =
             GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this@LoginActivity)
-        if (available == ConnectionResult.SUCCESS) { //everything is fine and the user can make map requests
-            return true
-        } else if (GoogleApiAvailability.getInstance().isUserResolvableError(available)) { //an error occured but we can resolve it
+        when {
+            available == ConnectionResult.SUCCESS -> { //everything is fine and the user can make map requests
+                return true
+            }
+            GoogleApiAvailability.getInstance().isUserResolvableError(available) -> { //an error occured but we can resolve it
 
-            val dialog: Dialog = GoogleApiAvailability.getInstance()
-                .getErrorDialog(this@LoginActivity, available, ERROR_DIALOG_REQUEST)
-            dialog.show()
-        } else {
-            Toast.makeText(this, "You can't make map requests", Toast.LENGTH_SHORT).show()
-        }
-        return false
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String?>,
-        grantResults: IntArray
-    ) {
-        mLocationPermissionGranted = false
-        when (requestCode) {
-            PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION -> {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.size > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                ) {
-                    mLocationPermissionGranted = true
-                }
+                val dialog: Dialog = GoogleApiAvailability.getInstance()
+                    .getErrorDialog(this@LoginActivity, available, ERROR_DIALOG_REQUEST)
+                dialog.show()
+            }
+            else -> {
+                toast("You can't make map requests")
             }
         }
-    }
-
-    override fun onActivityResult(
-        requestCode: Int,
-        resultCode: Int,
-        data: Intent?
-    ) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        when (requestCode) {
-            PERMISSIONS_REQUEST_ENABLE_GPS -> {
-                if (!mLocationPermissionGranted)
-                    getLocationPermission()
-                }
-        }
+        return false
     }
 }

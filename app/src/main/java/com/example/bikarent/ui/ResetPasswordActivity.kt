@@ -16,31 +16,48 @@ class ResetPasswordActivity : AppCompatActivity() {
         setContentView(R.layout.activity_reset_password)
         button_reset_password.setOnClickListener {
             val email = text_email.text.toString().trim()
-
-            if (email.isEmpty()) {
-                text_email.error = "Email Required"
-                text_email.requestFocus()
+            if (!validateEmail(email)){
                 return@setOnClickListener
             }
-
-            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                text_email.error = "Valid Email Required"
-                text_email.requestFocus()
-                return@setOnClickListener
-            }
-
-            progressbar.visibility = View.VISIBLE
-
-            FirebaseAuth.getInstance()
-                .sendPasswordResetEmail(email)
-                .addOnCompleteListener { task ->
-                    progressbar.visibility = View.GONE
-                    if (task.isSuccessful) {
-                        this.toast("Check your email")
-                    } else {
-                        this.toast(task.exception?.message!!)
-                    }
-                }
+            sendPasswordResetMail(email)
         }
     }
+
+    private fun sendPasswordResetMail(email: String) {
+        showProgressBar(true)
+        FirebaseAuth.getInstance()
+            .sendPasswordResetEmail(email)
+            .addOnCompleteListener { task ->
+                showProgressBar(false)
+                if (task.isSuccessful) {
+                    this.toast("Check your email")
+                } else {
+                    this.toast(task.exception?.message!!)
+                }
+            }
+    }
+
+    private fun validateEmail(email: String): Boolean {
+        if (email.isEmpty()) {
+            text_email.error = "Email Required"
+            text_email.requestFocus()
+            return false
+        }
+
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            text_email.error = "Valid Email Required"
+            text_email.requestFocus()
+            return false
+        }
+        return true
+    }
+
+    private fun showProgressBar(on:Boolean) {
+        if(on) {
+            progressbar.visibility = View.VISIBLE
+        }else{
+            progressbar.visibility = View.GONE
+        }
+    }
+
 }

@@ -14,8 +14,11 @@ import android.view.ViewGroup
 import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
 import com.example.bikarent.R
+import com.example.bikarent.utils.Constants.DEFAULT_IMAGE_URL
+import com.example.bikarent.utils.Constants.REQUEST_IMAGE_CAPTURE
 import com.example.bikarent.utils.toast
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.fragment_profile.*
@@ -36,73 +39,105 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         image_view.setOnClickListener{
             takePictureIntent()
         }
-        currentUser?.let {
-            Glide.with(this).load(it.photoUrl).into(image_view)
-            edit_text_name.setText(it.displayName)
-            profile_text_email.text = it.email
-            text_phone.text = if (it.phoneNumber.isNullOrEmpty()) "Add number" else it.phoneNumber
-            if(it.isEmailVerified)
-                text_not_verified.visibility= View.INVISIBLE
-            else
-                text_not_verified.visibility= View.VISIBLE
-        }
+
+        displayUserData()
+
         button_save.setOnClickListener {
-
-            val photo = when {
-                ::imageUri.isInitialized -> imageUri
-                currentUser?.photoUrl == null -> Uri.parse(DEFAULT_IMAGE_URL)
-                else -> currentUser.photoUrl
-            }
-
             val name = edit_text_name.text.toString().trim()
-
-            if (name.isEmpty()) {
-                edit_text_name.error = "name required"
-                edit_text_name.requestFocus()
+            if(!emptyNameVerification(name)){
                 return@setOnClickListener
             }
-
-            val updates = UserProfileChangeRequest.Builder()
-                .setDisplayName(name)
-                .setPhotoUri(photo)
-                .build()
-
-            progressbar.visibility = View.VISIBLE
-
-            currentUser?.updateProfile(updates)
-                ?.addOnCompleteListener { task ->
-                    progressbar.visibility = View.INVISIBLE
-                    if (task.isSuccessful) {
-                        context?.toast("Profile Updated")
-                    } else {
-                        context?.toast(task.exception?.message!!)
-                    }
-                }
-
+            updateProfile(currentUser, name)
         }
+
         text_not_verified.setOnClickListener {
-            currentUser?.sendEmailVerification()?.addOnCompleteListener {
-                if(it.isSuccessful){
-                    context?.toast("Verification Email Sent")
-                }else{
-                    context?.toast(it.exception?.message!!)
-                }
-            }
+            sendEmailVerification()
         }
+
         text_phone.setOnClickListener{
             val action = ProfileFragmentDirections.actionVerifyPhoneNumber()
             Navigation.findNavController(it).navigate(action)
         }
+
         profile_text_email.setOnClickListener{
             val action = ProfileFragmentDirections.actionUpdateEmail()
             Navigation.findNavController(it).navigate(action)
         }
+
         text_password.setOnClickListener{view->
             val action = ProfileFragmentDirections.actionUpdatePassowrd()
             Navigation.findNavController(view).navigate(action)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
+            val imageBitmap = data?.extras?.get("data") as Bitmap
+            uploadAndSaveImage(imageBitmap)
+        }
+    }
+
+    private fun sendEmailVerification() {
+        currentUser?.sendEmailVerification()?.addOnCompleteListener {
+            if (it.isSuccessful) {
+                context?.toast("Verification Email Sent")
+            } else {
+                context?.toast(it.exception?.message!!)
+            }
+        }
+    }
+
+    private fun updateProfile(currentUser: FirebaseUser?, name: String) {
+        val photo = when {
+            ::imageUri.isInitialized -> imageUri
+            currentUser?.photoUrl == null -> Uri.parse(DEFAULT_IMAGE_URL)
+            else -> currentUser.photoUrl
+        }
+
+
+        val updates = UserProfileChangeRequest.Builder()
+            .setDisplayName(name)
+            .setPhotoUri(photo)
+            .build()
+
+        progressbar.visibility = View.VISIBLE
+
+        currentUser?.updateProfile(updates)
+            ?.addOnCompleteListener { task ->
+                progressbar.visibility = View.INVISIBLE
+                if (task.isSuccessful) {
+                    context?.toast("Profile Updated")
+                } else {
+                    context?.toast(task.exception?.message!!)
+                }
+            }
+    }
+
+    private fun emptyNameVerification(name: String): Boolean {
+        if (name.isEmpty()) {
+            edit_text_name.error = "name required"
+            edit_text_name.requestFocus()
+            return false
+        }
+        return true
+    }
+
+    private fun displayUserData() {
+        currentUser?.let { user ->
+            Glide.with(this).load(user.photoUrl).into(image_view)
+            edit_text_name.setText(user.displayName)
+            profile_text_email.text = user.email
+            text_phone.text =
+                if (user.phoneNumber.isNullOrEmpty()) "Add number" else user.phoneNumber
+            if (user.isEmailVerified)
+                text_not_verified.visibility = View.INVISIBLE
+            else
+                text_not_verified.visibility = View.VISIBLE
         }
     }
 
@@ -113,14 +148,6 @@ class ProfileFragment : Fragment() {
                     REQUEST_IMAGE_CAPTURE
                 )}}
 
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
-            val imageBitmap = data?.extras?.get("data") as Bitmap
-            uploadAndSaveImage(imageBitmap)
-        }
     }
 
     private fun uploadAndSaveImage(imageBitmap: Bitmap) {
@@ -148,10 +175,5 @@ class ProfileFragment : Fragment() {
                 }
             }
         }
-    }
-
-    companion object{
-        val REQUEST_IMAGE_CAPTURE = 100
-        val DEFAULT_IMAGE_URL = "https://as2.ftcdn.net/jpg/01/35/05/81/500_F_135058162_EFp4zIhujsolouAcOmCR2jUhOe3vBySG.jpg" //black bike
     }
 }

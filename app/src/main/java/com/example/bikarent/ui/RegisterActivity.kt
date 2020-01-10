@@ -29,36 +29,10 @@ class RegisterActivity : AppCompatActivity() {
         mAuth = FirebaseAuth.getInstance()
         mDb = FirebaseFirestore.getInstance()
 
-        button_register.setOnClickListener {
-            val email = text_email.text.toString().trim()
-            val password = edit_text_password.text.toString().trim()
-            val name = edit_text_name.text.toString().trim()
-
-            if (email.isEmpty()) {
-                text_email.error = "Email Required"
-                text_email.requestFocus()
+        button_register.setOnClickListener {view ->
+            if (!verifyInputThenRegister()){
                 return@setOnClickListener
             }
-
-            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                text_email.error = "Valid Email Required"
-                text_email.requestFocus()
-                return@setOnClickListener
-            }
-
-            if (password.isEmpty() || password.length < 6) {
-                edit_text_password.error = "6 char password required"
-                edit_text_password.requestFocus()
-                return@setOnClickListener
-            }
-
-            if (name.isEmpty()){
-                edit_text_name.error = "Name Required"
-                edit_text_name.requestFocus()
-                return@setOnClickListener
-            }
-            registerUser(email, name, password)
-
         }
 
         text_view_login.setOnClickListener {
@@ -66,9 +40,40 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
+    private fun verifyInputThenRegister():Boolean{
+        val email = text_email.text.toString().trim()
+        val password = edit_text_password.text.toString().trim()
+        val name = edit_text_name.text.toString().trim()
+
+        if (email.isEmpty()) {
+            text_email.error = "Email Required"
+            text_email.requestFocus()
+            return false
+        }
+
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            text_email.error = "Valid Email Required"
+            text_email.requestFocus()
+            return false
+        }
+
+        if (password.isEmpty() || password.length < 6) {
+            edit_text_password.error = "6 char password required"
+            edit_text_password.requestFocus()
+            return false
+        }
+
+        if (name.isEmpty()){
+            edit_text_name.error = "Name Required"
+            edit_text_name.requestFocus()
+            return false
+        }
+        registerUser(email, name, password)
+        return true
+    }
 
     private fun registerUser(email: String,name: String, password: String) {
-        progressbar.visibility = View.VISIBLE
+        showProgressBar(true)
 
         mAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
@@ -84,13 +89,13 @@ class RegisterActivity : AppCompatActivity() {
 
                     newUserRef.set(user).addOnCompleteListener(this){
                         if (it.isSuccessful){
-                            progressbar.visibility = View.GONE
+                            showProgressBar(false)
                             toast("Succesfully registered")
                             login()
 
                         }else {
-                            task.exception?.message?.let {
-                                toast(it)
+                            task.exception?.message?.let {text ->
+                                toast(text)
                             }
                         }
                     }
@@ -106,6 +111,15 @@ class RegisterActivity : AppCompatActivity() {
         super.onStart()
         mAuth.currentUser?.let {
             login()
+        }
+    }
+
+    private fun showProgressBar(on:Boolean){
+        if(on){
+            progressbar.visibility = View.VISIBLE
+        }
+        else{
+            progressbar.visibility = View.GONE
         }
     }
 }

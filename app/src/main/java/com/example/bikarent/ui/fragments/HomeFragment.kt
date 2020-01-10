@@ -1,10 +1,8 @@
 package com.example.bikarent.ui.fragments
 
-
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,10 +15,8 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
-
 
 class HomeFragment : Fragment(), OnMapReadyCallback {
 
@@ -30,10 +26,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private var currentUser = FirebaseAuth.getInstance().currentUser
 
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
@@ -42,6 +35,16 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState)
         mMapView = view.findViewById(R.id.user_list_map)
         initGoogleMap(savedInstanceState)
+    }
+
+    //not used
+    private fun saveUserLocation() {
+        if (userLocation != null) {
+            val locationRef: DocumentReference = mDb
+                .collection(getString(R.string.collection_user_locations))
+                .document(currentUser!!.uid)
+            locationRef.set(userLocation!!)
+        }
     }
 
     private fun initGoogleMap(savedInstanceState: Bundle?) {
@@ -64,19 +67,6 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             outState.putBundle(MAPVIEW_BUNDLE_KEY, mapViewBundle)
         }
         mMapView!!.onSaveInstanceState(mapViewBundle)
-    }
-
-    private fun saveUserLocation() {
-        if (userLocation != null) {
-            val locationRef: DocumentReference = mDb
-                .collection(getString(R.string.collection_user_locations))
-                .document(currentUser!!.uid)
-            locationRef.set(userLocation!!).addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    print("saved location")
-                }
-            }
-        }
     }
 
     override fun onResume() {
